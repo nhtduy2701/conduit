@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
+import User from "./User";
 
 const ArticlesByAuthor = () => {
   const [articles, setArticles] = useState([]);
@@ -127,7 +128,9 @@ const ArticlesByAuthor = () => {
 };
 
 const Profile = () => {
+  const { loggedIn, user } = User();
   const [profile, setProfile] = useState(null);
+  const [isFollowing, setIsFollowing] = useState(false);
   let { username } = useParams();
 
   useEffect(() => {
@@ -137,6 +140,7 @@ const Profile = () => {
           `https://api.realworld.io/api/profiles/${username}`
         );
         setProfile(response.data.profile);
+        setIsFollowing(response.data.profile.following);
       } catch (error) {
         console.error("Error fetching user info:", error);
       }
@@ -144,6 +148,28 @@ const Profile = () => {
 
     fetchUserInfo();
   }, [username]);
+
+  const handleFollow = async () => {
+    try {
+      await axios.post(
+        `https://api.realworld.io/api/profiles/${username}/follow`
+      );
+      setIsFollowing(true);
+    } catch (error) {
+      console.error("Error following user:", error);
+    }
+  };
+
+  const handleUnfollow = async () => {
+    try {
+      await axios.delete(
+        `https://api.realworld.io/api/profiles/${username}/follow`
+      );
+      setIsFollowing(false);
+    } catch (error) {
+      console.error("Error unfollowing user:", error);
+    }
+  };
 
   return (
     <>
@@ -160,17 +186,51 @@ const Profile = () => {
                   />
                   <h4>{profile.username}</h4>
                   <p>{profile.bio}</p>
-                  <Link to="/register">
-                    {" "}
-                    <button className="btn btn-sm btn-outline-secondary action-btn">
-                      <i className="ion-plus-round" />
-                      &nbsp; Follow {profile.username}
-                    </button>
-                  </Link>
-                  {/* <button className="btn btn-sm btn-outline-secondary action-btn">
-                    <i className="ion-gear-a" />
-                    &nbsp; Edit Profile Settings
-                  </button> */}
+                  <>
+                    {loggedIn ? (
+                      <>
+                        {profile.username === user.username ? (
+                          <Link to="/settings">
+                            {" "}
+                            <button className="btn btn-sm btn-outline-secondary action-btn">
+                              <i className="ion-gear-a" />
+                              &nbsp; Edit Profile Settings
+                            </button>
+                          </Link>
+                        ) : (
+                          <>
+                            {!isFollowing ? (
+                              <button
+                                className="btn btn-sm btn-outline-secondary action-btn"
+                                onClick={handleFollow}
+                              >
+                                <i className="ion-plus-round" />
+                                &nbsp; Follow {profile.username}
+                              </button>
+                            ) : (
+                              <button
+                                className="btn btn-sm btn-outline-secondary action-btn"
+                                onClick={handleUnfollow}
+                              >
+                                <i className="ion-plus-round" />
+                                &nbsp; Unfollow {profile.username}
+                              </button>
+                            )}
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <Link to="/register">
+                          {" "}
+                          <button className="btn btn-sm btn-outline-secondary action-btn">
+                            <i className="ion-plus-round" />
+                            &nbsp; Follow {profile.username}
+                          </button>
+                        </Link>
+                      </>
+                    )}
+                  </>
                 </div>
               </div>
             </div>

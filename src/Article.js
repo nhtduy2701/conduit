@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
-import AuthUser from "./AuthUser";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import User from "./User";
 
 const Comments = () => {
   const [comments, setComments] = useState([]);
@@ -61,8 +61,10 @@ const Comments = () => {
 };
 
 const ArticlePage = () => {
-  const { loggedIn, user } = AuthUser();
+  const { loggedIn, user } = User();
   const [article, setArticle] = useState(null);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const navigate = useNavigate();
   let { slug } = useParams();
 
   useEffect(() => {
@@ -79,6 +81,46 @@ const ArticlePage = () => {
 
     fetchArticlePage();
   }, [slug]);
+
+  const handleFollow = async () => {
+    try {
+      await axios.post(
+        `https://api.realworld.io/api/profiles/${article.author.username}/follow`
+      );
+      setIsFollowing(true);
+    } catch (error) {
+      console.error("Error following user:", error);
+    }
+  };
+
+  const handleUnfollow = async () => {
+    try {
+      await axios.delete(
+        `https://api.realworld.io/api/profiles/${article.author.username}/follow`
+      );
+      setIsFollowing(false);
+    } catch (error) {
+      console.error("Error unfollowing user:", error);
+    }
+  };
+
+  const handleFavorite = async () => {};
+
+  const handleDelete = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        await axios.delete(`https://api.realworld.io/api/articles/${slug}`, {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        });
+      }
+      navigate("/");
+    } catch (error) {
+      console.error("Error deleting article:", error);
+    }
+  };
 
   return (
     <>
@@ -102,27 +144,69 @@ const ArticlePage = () => {
                     {new Date(article.createdAt).toDateString()}
                   </time>
                 </div>
-                <Link to="/resgiter">
-                  <button className="btn btn-sm btn-outline-secondary">
-                    <i className="ion-plus-round" />
-                    &nbsp; Follow {article.author.username}{" "}
-                  </button>
-                </Link>
-                &nbsp;
-                <Link to="/register">
-                  <button className="btn btn-sm btn-outline-primary">
-                    <i className="ion-heart" />
-                    &nbsp; Favorite Article{" "}
-                    <span className="counter">({article.favoritesCount})</span>
-                  </button>
-                </Link>
-                &nbsp;
-                {loggedIn && (
+                {!loggedIn && !article.author.username === user.username ? (
                   <>
-                    <button className="btn btn-sm btn-outline-warning">
-                      <i className="ion-edit"></i>
-                      &nbsp; Edit Article
+                    <Link to="/resgiter">
+                      <button className="btn btn-sm btn-outline-secondary">
+                        <i className="ion-plus-round" />
+                        &nbsp; Follow {article.author.username}{" "}
+                      </button>
+                    </Link>
+                    <Link to="/register">
+                      <button className="btn btn-sm btn-outline-primary">
+                        <i className="ion-heart" />
+                        &nbsp; Favorite Article{" "}
+                        <span className="counter">
+                          ({article.favoritesCount})
+                        </span>
+                      </button>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    {!isFollowing ? (
+                      <button
+                        className="btn btn-sm btn-outline-secondary action-btn"
+                        onClick={handleFollow}
+                      >
+                        <i className="ion-plus-round" />
+                        &nbsp; Follow {article.author.username}
+                      </button>
+                    ) : (
+                      <button
+                        className="btn btn-sm btn-outline-secondary action-btn"
+                        onClick={handleUnfollow}
+                      >
+                        <i className="ion-plus-round" />
+                        &nbsp; Unfollow {article.author.username}
+                      </button>
+                    )}
+                    &nbsp;
+                    <button
+                      className="btn btn-sm btn-outline-primary"
+                      onClick={handleFavorite}
+                    >
+                      <i className="ion-heart" />
+                      &nbsp; Favorite Article{" "}
+                      <span className="counter">
+                        ({article.favoritesCount})
+                      </span>
                     </button>
+                  </>
+                )}
+                &nbsp;
+                {loggedIn && article.author.username === user.username && (
+                  <>
+                    <Link to={`/article/${slug}/editor`}>
+                      {" "}
+                      <button
+                        className="btn btn-sm btn-outline-warning"
+                        onClick={handleDelete}
+                      >
+                        <i className="ion-edit"></i>
+                        &nbsp; Edit Article
+                      </button>
+                    </Link>
                     &nbsp;
                     <button className="btn btn-sm btn-outline-danger">
                       <i className="ion-trash-a"></i>
@@ -185,7 +269,7 @@ const ArticlePage = () => {
                   </button>
                 </Link>
                 &nbsp;
-                {loggedIn && (
+                {loggedIn && article.author.username === user.username && (
                   <>
                     <button className="btn btn-sm btn-outline-warning">
                       <i className="ion-edit"></i>
@@ -243,4 +327,5 @@ const ArticlePage = () => {
     </>
   );
 };
+
 export default ArticlePage;

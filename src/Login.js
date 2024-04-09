@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
-import AuthUser from "./AuthUser";
+import User from "./User";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const { setLoggedIn, setUser } = AuthUser();
+  const { setLoggedIn, setUser } = User();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,6 +21,7 @@ const Login = () => {
       localStorage.setItem("token", response.data.user.token);
       setUser(response.data.user);
       setLoggedIn(true);
+      setError("Login successful");
       window.location.href = "/";
     } catch (error) {
       setError("Invalid email or password");

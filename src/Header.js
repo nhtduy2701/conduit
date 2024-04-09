@@ -1,8 +1,8 @@
 import { Link, NavLink } from "react-router-dom";
-import AuthUser from "./AuthUser";
+import User from "./User";
 
 const Header = () => {
-  const { loggedIn, user } = AuthUser();
+  const { loggedIn, user } = User();
 
   return (
     <header>

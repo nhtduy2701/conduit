@@ -1,4 +1,4 @@
-const Editor = () => {
+const CreateEditor = () => {
   return (
     <div className="editor-page">
       <div className="container page">
@@ -56,4 +56,4 @@ const Editor = () => {
   );
 };
 
-export default Editor;
+export default CreateEditor;
