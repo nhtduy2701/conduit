@@ -1,14 +1,15 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./Header";
-import Footer from "./Footer";
-import Home from "./Home";
-import Login from "./Login";
-import Register from "./Register";
-import Article from "./Article";
-import Profile from "./Profile";
-import Favorite from "./Favorite";
-import Setting from "./Setting";
-import Editor from "./Editor";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import Home from "../src/pages/Home";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import Article from "./pages/Article";
+import Profile from "./pages/Profile";
+import Setting from "./pages/Setting";
+import Favorite from "./pages/Favorite";
+import CreateArticle from "./pages/CreateArticle";
+import EditArticle from "./pages/EditArticle";
 
 function App() {
   return (
@@ -22,7 +23,8 @@ function App() {
         <Route path="/:username" element={<Profile />} />
         <Route path="/:username/favorites" element={<Favorite />} />
         <Route path="/settings" element={<Setting />} />
-        <Route path="/editor" element={<Editor />} />
+        <Route path="/editor" element={<CreateArticle />} />
+        <Route path="/editor/:slug" element={<EditArticle />} />
       </Routes>
       <Footer />
     </Router>
