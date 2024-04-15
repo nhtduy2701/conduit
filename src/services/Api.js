@@ -65,13 +65,15 @@ export const unfollowUser = async (username) => {
 };
 
 // List articles
-export const listArticles = async (
+export const getArticles = async (
+  requestType,
   tag,
   author,
   favorited,
   limit = 0,
   offset = 0
 ) => {
+  let endpoint = "/articles";
   const params = {
     tag,
     author,
@@ -80,17 +82,11 @@ export const listArticles = async (
     offset,
   };
 
-  const response = await api.get("/articles", { params });
-  return response.data;
-};
+  if (requestType === "feed") {
+    endpoint = "/articles/feed";
+  }
 
-// Feed articles
-export const feedArticles = async (limit = 0, offset = 0) => {
-  const params = {
-    limit,
-    offset,
-  };
-  const response = await api.get("/articles/feed", { params });
+  const response = await api.get(endpoint, { params });
   return response.data;
 };
 

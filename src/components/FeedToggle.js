@@ -1,14 +1,33 @@
 import { Link } from "react-router-dom";
 
-const FeedToggle = ({ currentTag, handleFeedClick, loggedIn }) => {
+const FeedToggle = ({
+  currentTag,
+  handleGlobalFeedClick,
+  handleYourFeedClick,
+  loggedIn,
+  requestType,
+}) => {
   return (
     <div className="feed-toggle">
       <ul className="nav nav-pills outline-active">
+        {loggedIn && (
+          <li className="nav-item">
+            <Link
+              className={requestType ? "nav-link active" : "nav-link"}
+              to="/"
+              onClick={handleYourFeedClick}
+            >
+              Your Feed
+            </Link>
+          </li>
+        )}
         <li className="nav-item">
           <Link
-            className={!currentTag ? "nav-link active" : "nav-link"}
+            className={
+              !currentTag && !requestType ? "nav-link active" : "nav-link"
+            }
             to="/"
-            onClick={handleFeedClick}
+            onClick={handleGlobalFeedClick}
           >
             Global Feed
           </Link>
@@ -16,8 +35,10 @@ const FeedToggle = ({ currentTag, handleFeedClick, loggedIn }) => {
         {currentTag && (
           <li className="nav-item">
             <Link
-              className={currentTag ? "nav-link active" : "nav-link"}
-              to={`/${currentTag}`}
+              className={
+                currentTag && !requestType ? "nav-link active" : "nav-link"
+              }
+              to="/"
             >
               <i className="ion-pound"></i>&nbsp; {currentTag}
             </Link>

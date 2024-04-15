@@ -8,9 +8,16 @@ const Home = () => {
   const { loggedIn } = useAuth();
   const [currentTag, setCurrentTag] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [requestType, setRequestType] = useState(null);
 
-  const handleFeedClick = () => {
+  const handleGlobalFeedClick = () => {
     setCurrentTag(null);
+    setRequestType(null);
+  };
+
+  const handleYourFeedClick = () => {
+    setCurrentTag(null);
+    setRequestType("feed");
   };
 
   return (
@@ -27,14 +34,26 @@ const Home = () => {
             <FeedToggle
               loggedIn={loggedIn}
               currentTag={currentTag}
-              handleFeedClick={handleFeedClick}
+              handleGlobalFeedClick={handleGlobalFeedClick}
+              handleYourFeedClick={handleYourFeedClick}
+              requestType={requestType}
             />
-            <ArticleList
-              currentTag={currentTag}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              loggedIn={loggedIn}
-            />
+            {loggedIn ? (
+              <ArticleList
+                currentTag={currentTag}
+                requestType={requestType}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                loggedIn={loggedIn}
+              />
+            ) : (
+              <ArticleList
+                currentTag={currentTag}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                loggedIn={loggedIn}
+              />
+            )}
           </div>
           <div className="col-md-3">
             <div className="sidebar">

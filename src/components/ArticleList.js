@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { listArticles } from "../services/Api";
+import { getArticles } from "../services/Api";
 import ArticlePreview from "./ArticlePreview";
 import { Link } from "react-router-dom";
 
 const ArticleList = ({
+  requestType,
   favorited,
   username,
   currentTag,
@@ -20,7 +21,8 @@ const ArticleList = ({
       try {
         let response;
         if (currentTag) {
-          response = await listArticles(
+          response = await getArticles(
+            null,
             currentTag,
             null,
             null,
@@ -28,7 +30,8 @@ const ArticleList = ({
             (currentPage - 1) * 10
           );
         } else if (username) {
-          response = await listArticles(
+          response = await getArticles(
+            null,
             null,
             username,
             null,
@@ -36,15 +39,26 @@ const ArticleList = ({
             (currentPage - 1) * 10
           );
         } else if (favorited) {
-          response = await listArticles(
+          response = await getArticles(
+            null,
             null,
             null,
             favorited,
             10,
             (currentPage - 1) * 10
           );
+        } else if (requestType) {
+          response = await getArticles(
+            requestType,
+            null,
+            null,
+            null,
+            10,
+            (currentPage - 1) * 10
+          );
         } else {
-          response = await listArticles(
+          response = await getArticles(
+            null,
             null,
             null,
             null,
@@ -62,7 +76,7 @@ const ArticleList = ({
     };
 
     fetchArticles();
-  }, [currentPage, currentTag, username, favorited]);
+  }, [currentPage, currentTag, username, favorited, requestType]);
 
   const onPageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -84,32 +98,40 @@ const ArticleList = ({
 
   return (
     <>
-      {articles.map((article) => (
-        <ArticlePreview
-          key={article.slug}
-          article={article}
-          loggedIn={loggedIn}
-        />
-      ))}
-      <nav>
-        <ul className="pagination">
-          {[...Array(totalPages).keys()].map((pageNumber) => (
-            <li
-              key={pageNumber}
-              className={`page-item ${
-                pageNumber + 1 === currentPage ? "active" : ""
-              }`}
-            >
-              <Link
-                className="page-link"
-                onClick={() => onPageChange(pageNumber + 1)}
-              >
-                {pageNumber + 1}
-              </Link>
-            </li>
+      {loading ? (
+        <div className="article-preview">
+          <p>Loading Articles...</p>
+        </div>
+      ) : (
+        <>
+          {articles.map((article) => (
+            <ArticlePreview
+              key={article.slug}
+              article={article}
+              loggedIn={loggedIn}
+            />
           ))}
-        </ul>
-      </nav>
+          <nav>
+            <ul className="pagination">
+              {[...Array(totalPages).keys()].map((pageNumber) => (
+                <li
+                  key={pageNumber}
+                  className={`page-item ${
+                    pageNumber + 1 === currentPage ? "active" : ""
+                  }`}
+                >
+                  <Link
+                    className="page-link"
+                    onClick={() => onPageChange(pageNumber + 1)}
+                  >
+                    {pageNumber + 1}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </>
+      )}
     </>
   );
 };

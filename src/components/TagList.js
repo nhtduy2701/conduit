@@ -40,7 +40,7 @@ const TagList = ({ setCurrentTag, setCurrentPage, currentPage }) => {
           key={tag}
           className="tag-pill tag-default"
           onClick={() => handleTagClick(tag)}
-          to={`/${tag}`}
+          to="/"
         >
           {tag}
         </Link>
