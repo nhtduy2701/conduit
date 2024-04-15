@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
-import FollowAuthor from "./FollowAuthorButton";
-import FavoriteArticle from "./FavoriteArticleButton";
-import DeleteArticle from "./DeleteArticleButton";
-import EditArticle from "./EditArticleButton";
+import FollowButton from "./FollowButton";
+import FavoriteButton from "./FavoriteArticle";
+import DeleteButton from "./DeleteArticle";
 
 const ArticleMeta = ({ article, loggedIn, user, slug }) => {
   return (
@@ -18,23 +17,29 @@ const ArticleMeta = ({ article, loggedIn, user, slug }) => {
           {new Date(article.createdAt).toDateString()}
         </time>
       </div>
-      <FollowAuthor user={user} loggedIn={loggedIn} author={article.author} />
+      <FollowButton user={user} loggedIn={loggedIn} author={article.author} />
       &nbsp;
-      <FavoriteArticle user={user} loggedIn={loggedIn} article={article} />
+      <FavoriteButton
+        loggedIn={loggedIn}
+        article={article}
+        type="Favorite"
+        showParentheses={true}
+      />
       &nbsp;
-      <DeleteArticle
+      <DeleteButton
         slug={slug}
         user={user}
         loggedIn={loggedIn}
         article={article}
       />
       &nbsp;
-      <EditArticle
-        slug={slug}
-        user={user}
-        loggedIn={loggedIn}
-        article={article}
-      />
+      {loggedIn && user.username === article.author.username && (
+        <Link to={`/editor/${slug}`}>
+          <button className="btn btn-sm btn-outline-warning">
+            <i className="ion-edit"></i> Edit Article
+          </button>
+        </Link>
+      )}
     </div>
   );
 };

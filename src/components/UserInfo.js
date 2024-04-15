@@ -1,5 +1,5 @@
-import EditProfile from "./EditProfileButton";
-import FollowAuthor from "./FollowAuthorButton";
+import EditButton from "./EditProfile";
+import FollowAuthor from "./FollowButton";
 
 const UserInfo = ({ profile, user, loggedIn }) => {
   return (
@@ -15,7 +15,7 @@ const UserInfo = ({ profile, user, loggedIn }) => {
             <h4>{profile.username}</h4>
             <p>{profile.bio}</p>
             <FollowAuthor user={user} loggedIn={loggedIn} author={profile} />
-            <EditProfile user={user} loggedIn={loggedIn} profile={profile} />
+            <EditButton user={user} loggedIn={loggedIn} profile={profile} />
           </div>
         </div>
       </div>

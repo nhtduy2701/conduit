@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { addCommentToArticle } from "../services/Api";
-import { useNavigate } from "react-router-dom";
 
-const CommentForm = ({ user, slug }) => {
-  const navigate = useNavigate();
+const CommentForm = ({ user, slug, updateCommentsList }) => {
   const [commentData, setCommentData] = useState({
     body: "",
   });
@@ -18,7 +16,10 @@ const CommentForm = ({ user, slug }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await addCommentToArticle(slug, commentData);
-    navigate("/");
+    updateCommentsList();
+    setCommentData({
+      body: "",
+    });
   };
 
   return (

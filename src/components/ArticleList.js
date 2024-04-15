@@ -9,7 +9,6 @@ const ArticleList = ({
   currentTag,
   currentPage,
   setCurrentPage,
-  user,
   loggedIn,
 }) => {
   const [articles, setArticles] = useState([]);
@@ -57,7 +56,7 @@ const ArticleList = ({
         setArticles(response.articles);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching tags:", error);
+        console.error("Error fetching articles:", error);
         setLoading(false);
       }
     };
@@ -89,7 +88,6 @@ const ArticleList = ({
         <ArticlePreview
           key={article.slug}
           article={article}
-          user={user}
           loggedIn={loggedIn}
         />
       ))}

@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { getCommentsFromArticle } from "../services/Api";
 import { Link } from "react-router-dom";
-import DeleteComment from "./DeleteCommentButton";
+import DeleteComment from "./DeleteComment";
 import CommentForm from "../components/CommentForm";
 
-const Comments = ({ slug, user }) => {
+const CommentList = ({ slug, user }) => {
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
@@ -20,9 +20,22 @@ const Comments = ({ slug, user }) => {
     fetchComments();
   }, [slug]);
 
+  const updateCommentsList = async () => {
+    try {
+      const response = await getCommentsFromArticle(slug);
+      setComments(response.comments);
+    } catch (error) {
+      console.error("Error updating comments list:", error);
+    }
+  };
+
   return (
     <>
-      <CommentForm user={user} slug={slug} />
+      <CommentForm
+        user={user}
+        slug={slug}
+        updateCommentsList={updateCommentsList}
+      />
       {comments.map((comment) => (
         <div className="card" key={comment.id}>
           <div className="card-block">
@@ -49,7 +62,11 @@ const Comments = ({ slug, user }) => {
             <time className="date-posted" dateTime={comment.createdAt}>
               {new Date(comment.createdAt).toDateString()}
             </time>
-            <DeleteComment slug={slug} commentId={comment.id} />
+            <DeleteComment
+              slug={slug}
+              commentId={comment.id}
+              updateCommentsList={updateCommentsList}
+            />
           </div>
         </div>
       ))}
@@ -57,4 +74,4 @@ const Comments = ({ slug, user }) => {
   );
 };
 
-export default Comments;
+export default CommentList;

@@ -85,7 +85,11 @@ export const listArticles = async (
 };
 
 // Feed articles
-export const feedArticles = async (params) => {
+export const feedArticles = async (limit = 0, offset = 0) => {
+  const params = {
+    limit,
+    offset,
+  };
   const response = await api.get("/articles/feed", { params });
   return response.data;
 };

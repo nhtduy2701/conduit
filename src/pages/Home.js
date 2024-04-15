@@ -5,9 +5,13 @@ import FeedToggle from "../components/FeedToggle";
 import { useAuth } from "../services/AuthContext";
 
 const Home = () => {
-  const { loggedIn, user } = useAuth();
+  const { loggedIn } = useAuth();
   const [currentTag, setCurrentTag] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const handleFeedClick = () => {
+    setCurrentTag(null);
+  };
 
   return (
     <div className="home-page">
@@ -20,12 +24,15 @@ const Home = () => {
       <div className="container page">
         <div className="row">
           <div className="col-md-9">
-            <FeedToggle currentTag={currentTag} />
+            <FeedToggle
+              loggedIn={loggedIn}
+              currentTag={currentTag}
+              handleFeedClick={handleFeedClick}
+            />
             <ArticleList
               currentTag={currentTag}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
-              user={user}
               loggedIn={loggedIn}
             />
           </div>

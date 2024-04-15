@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import ArticleTags from "./ArticleTags";
-import FavoritePreview from "./FavoritePreviewButton";
+import FavoriteButton from "./FavoriteArticle";
 
-const ArticlePreview = ({ article, user, loggedIn }) => {
+const ArticlePreview = ({ article, loggedIn }) => {
   return (
     <>
       <div className="article-preview" key={article.slug}>
@@ -18,7 +18,7 @@ const ArticlePreview = ({ article, user, loggedIn }) => {
               {new Date(article.createdAt).toDateString()}
             </time>
           </div>
-          <FavoritePreview article={article} user={user} loggedIn={loggedIn} />
+          <FavoriteButton loggedIn={loggedIn} article={article} />
         </div>
         <Link to={`/article/${article.slug}`} className="preview-link">
           <h1>{article.title}</h1>
