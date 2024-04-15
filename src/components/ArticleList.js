@@ -11,6 +11,8 @@ const ArticleList = ({
   currentPage,
   setCurrentPage,
   loggedIn,
+  limit = 10,
+  offset = (currentPage - 1) * limit,
 }) => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,8 +28,8 @@ const ArticleList = ({
             currentTag,
             null,
             null,
-            10,
-            (currentPage - 1) * 10
+            limit,
+            offset
           );
         } else if (username) {
           response = await getArticles(
@@ -35,8 +37,8 @@ const ArticleList = ({
             null,
             username,
             null,
-            10,
-            (currentPage - 1) * 10
+            limit,
+            offset
           );
         } else if (favorited) {
           response = await getArticles(
@@ -44,8 +46,8 @@ const ArticleList = ({
             null,
             null,
             favorited,
-            10,
-            (currentPage - 1) * 10
+            limit,
+            offset
           );
         } else if (requestType) {
           response = await getArticles(
@@ -53,18 +55,11 @@ const ArticleList = ({
             null,
             null,
             null,
-            10,
-            (currentPage - 1) * 10
+            limit,
+            offset
           );
         } else {
-          response = await getArticles(
-            null,
-            null,
-            null,
-            null,
-            10,
-            (currentPage - 1) * 10
-          );
+          response = await getArticles(null, null, null, null, limit, offset);
         }
         setTotalPages(Math.ceil(response.articlesCount / 10));
         setArticles(response.articles);
@@ -76,7 +71,15 @@ const ArticleList = ({
     };
 
     fetchArticles();
-  }, [currentPage, currentTag, username, favorited, requestType]);
+  }, [
+    limit,
+    offset,
+    currentPage,
+    currentTag,
+    username,
+    favorited,
+    requestType,
+  ]);
 
   const onPageChange = (pageNumber) => {
     setCurrentPage(pageNumber);

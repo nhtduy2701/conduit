@@ -70,8 +70,8 @@ export const getArticles = async (
   tag,
   author,
   favorited,
-  limit = 0,
-  offset = 0
+  limit,
+  offset
 ) => {
   let endpoint = "/articles";
   const params = {
