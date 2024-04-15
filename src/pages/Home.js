@@ -13,11 +13,13 @@ const Home = () => {
   const handleGlobalFeedClick = () => {
     setCurrentTag(null);
     setRequestType(null);
+    setCurrentPage(1);
   };
 
   const handleYourFeedClick = () => {
     setCurrentTag(null);
     setRequestType("feed");
+    setCurrentPage(1);
   };
 
   return (
@@ -38,22 +40,13 @@ const Home = () => {
               handleYourFeedClick={handleYourFeedClick}
               requestType={requestType}
             />
-            {loggedIn ? (
-              <ArticleList
-                currentTag={currentTag}
-                requestType={requestType}
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                loggedIn={loggedIn}
-              />
-            ) : (
-              <ArticleList
-                currentTag={currentTag}
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                loggedIn={loggedIn}
-              />
-            )}
+            <ArticleList
+              requestType={requestType}
+              currentTag={currentTag}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              loggedIn={loggedIn}
+            />
           </div>
           <div className="col-md-3">
             <div className="sidebar">
