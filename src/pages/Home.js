@@ -52,7 +52,6 @@ const Home = () => {
             <div className="sidebar">
               <p>Popular Tags</p>
               <TagList
-                currentPage={currentPage}
                 setCurrentTag={setCurrentTag}
                 setCurrentPage={setCurrentPage}
               />

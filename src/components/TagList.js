@@ -1,41 +1,41 @@
-import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { getTags } from "../services/Api";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-const TagList = ({ setCurrentTag, setCurrentPage, currentPage }) => {
-  const [tags, setTags] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const response = await getTags();
-        setTags(response.tags);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching tags:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchTags();
-  }, [currentPage]);
+const TagList = ({ setCurrentTag, setCurrentPage }) => {
+  const navigate = useNavigate();
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["tags"],
+    queryFn: getTags,
+  });
 
   const handleTagClick = (tag) => {
     setCurrentTag(tag);
     setCurrentPage(1);
   };
 
-  if (loading)
+  if (isLoading)
     return (
       <div className="tag-list">
         <p>Loading Tags...</p>
       </div>
     );
 
+  if (isError) {
+    navigate("*");
+    return null;
+  }
+
+  if (!data.tags || data.tags.length === 0)
+    return (
+      <div className="article-preview">
+        <p>No tags are here... yet.</p>
+      </div>
+    );
+
   return (
     <div className="tag-list">
-      {tags.map((tag) => (
+      {data.tags.map((tag) => (
         <Link
           key={tag}
           className="tag-pill tag-default"

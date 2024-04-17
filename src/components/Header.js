@@ -50,7 +50,7 @@ const Header = () => {
                       className={({ isActive }) =>
                         isActive ? "nav-link active" : "nav-link"
                       }
-                      to={`/${user.username}`}
+                      to={`/profile/${user.username}`}
                     >
                       <img
                         src={user.image}

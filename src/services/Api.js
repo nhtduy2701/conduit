@@ -49,7 +49,7 @@ export const updateUser = async (userData) => {
 // Get profile
 export const getProfile = async (username) => {
   const response = await api.get(`/profiles/${username}`);
-  return response.data;
+  return response.data.profile;
 };
 
 // Follow user
@@ -93,7 +93,7 @@ export const getArticles = async (
 // Get article
 export const getArticle = async (slug) => {
   const response = await api.get(`/articles/${slug}`);
-  return response.data;
+  return response.data.article;
 };
 
 // Create article
@@ -114,7 +114,7 @@ export const deleteArticle = async (slug) => {
 };
 
 // Add comment to an article
-export const addCommentToArticle = async (slug, body) => {
+export const addComment = async (slug, body) => {
   const response = await api.post(`/articles/${slug}/comments`, {
     comment: body,
   });
@@ -122,7 +122,7 @@ export const addCommentToArticle = async (slug, body) => {
 };
 
 // Get comments from an article
-export const getCommentsFromArticle = async (slug) => {
+export const getComments = async (slug) => {
   const response = await api.get(`/articles/${slug}/comments`);
   return response.data;
 };

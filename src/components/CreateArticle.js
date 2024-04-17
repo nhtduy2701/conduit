@@ -1,10 +1,14 @@
 import { getTags, createArticle } from "../services/Api";
 import { useState, useEffect } from "react";
 import Select from "react-select";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 const CreateForm = () => {
   const [error, setError] = useState(null);
   const [tags, setTags] = useState([]);
+  const navigate = useNavigate();
+
   const [articleData, setArticleData] = useState({
     title: "",
     description: "",
@@ -12,18 +16,14 @@ const CreateForm = () => {
     tagList: [""],
   });
 
-  useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const response = await getTags();
-        setTags(response.tags.map((tag) => ({ value: tag, label: tag })));
-      } catch (error) {
-        setError("Failed to fetch tags");
-      }
-    };
+  const { data } = useQuery({
+    queryKey: ["tags"],
+    queryFn: getTags,
+  });
 
-    fetchTags();
-  }, []);
+  useEffect(() => {
+    setTags(data.tags.map((tag) => ({ value: tag, label: tag })));
+  }, [data.tags]);
 
   const handleChange = (e) => {
     setArticleData({
@@ -43,11 +43,12 @@ const CreateForm = () => {
     e.preventDefault();
     try {
       await createArticle(articleData);
-      setError("Successful!");
+      navigate("/");
     } catch (error) {
-      setError("Failed!");
+      setError("Error");
     }
   };
+
   return (
     <form onSubmit={handlePublishSubmit}>
       <fieldset>

@@ -1,16 +1,26 @@
 import { deleteComment } from "../services/Api";
 
-const DeleteComment = ({ slug, commentId, updateCommentsList }) => {
+const DeleteComment = ({
+  slug,
+  comment,
+  user,
+  updateCommentsList,
+  loggedIn,
+}) => {
   const handleDelete = async (e) => {
     e.preventDefault();
-    await deleteComment(slug, commentId);
+    await deleteComment(slug, comment.id);
     updateCommentsList();
   };
 
   return (
-    <span className="mod-options" onClick={handleDelete}>
-      <i className="ion-trash-a"></i>
-    </span>
+    <>
+      {loggedIn && user.username === comment.author.username && (
+        <span className="mod-options" onClick={handleDelete}>
+          <i className="ion-trash-a"></i>
+        </span>
+      )}
+    </>
   );
 };
 

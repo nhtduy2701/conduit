@@ -1,10 +1,14 @@
-import { getTags, updateArticle, getArticle } from "../services/Api";
+import { getTags, updateArticle } from "../services/Api";
 import { useState, useEffect } from "react";
 import Select from "react-select";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 const UpdateForm = ({ slug }) => {
   const [error, setError] = useState(null);
   const [tags, setTags] = useState([]);
+  const navigate = useNavigate();
+
   const [articleData, setArticleData] = useState({
     title: "",
     description: "",
@@ -12,28 +16,14 @@ const UpdateForm = ({ slug }) => {
     tagList: [],
   });
 
+  const { data } = useQuery({
+    queryKey: ["tags"],
+    queryFn: getTags,
+  });
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await Promise.all([getTags(), getArticle(slug)]);
-        const tagsResponse = response[0];
-        const articleResponse = response[1];
-
-        setTags(tagsResponse.tags.map((tag) => ({ value: tag, label: tag })));
-        setArticleData({
-          title: articleResponse.article.title,
-          description: articleResponse.article.description,
-          body: articleResponse.article.body,
-          tagList: articleResponse.article.tagList,
-        });
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setError("Error fetching data");
-      }
-    };
-
-    fetchData();
-  }, [slug]);
+    setTags(data.tags.map((tag) => ({ value: tag, label: tag })));
+  }, [data.tags]);
 
   const handleChange = (e) => {
     setArticleData({
@@ -53,9 +43,9 @@ const UpdateForm = ({ slug }) => {
     e.preventDefault();
     try {
       await updateArticle(slug, articleData);
-      setError("Update successful!");
+      navigate("/");
     } catch (error) {
-      setError("Failed to update article!");
+      setError("Error");
     }
   };
 

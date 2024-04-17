@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { addCommentToArticle } from "../services/Api";
+import { addComment } from "../services/Api";
 
 const CommentForm = ({ user, slug, updateCommentsList }) => {
   const [commentData, setCommentData] = useState({
@@ -15,7 +15,7 @@ const CommentForm = ({ user, slug, updateCommentsList }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await addCommentToArticle(slug, commentData);
+    await addComment(slug, commentData);
     updateCommentsList();
     setCommentData({
       body: "",

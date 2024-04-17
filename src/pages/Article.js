@@ -1,35 +1,38 @@
-import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { getArticle } from "../services/Api";
 import { useAuth } from "../services/AuthContext";
 import CommentList from "../components/CommentList";
 import ArticleMeta from "../components/ArticleMeta";
 import ArticleTags from "../components/ArticleTags";
+import { useQuery } from "@tanstack/react-query";
 
 const Article = () => {
   const { slug } = useParams();
-  const [article, setArticle] = useState(null);
+  const navigate = useNavigate();
   const { loggedIn, user } = useAuth();
 
-  useEffect(() => {
-    const fetchArticle = async () => {
-      const response = await getArticle(slug);
-      setArticle(response.article);
-    };
+  const { data, isError } = useQuery({
+    queryKey: ["article", slug],
+    queryFn: () => getArticle(slug),
+  });
 
-    fetchArticle();
-  }, [slug]);
+  useEffect(() => {
+    if (isError) {
+      navigate("*");
+    }
+  }, [isError, navigate]);
 
   return (
     <>
-      {article && (
+      {data && (
         <div className="article-page">
           <div className="banner">
             <div className="container">
-              <h1>{article.title}</h1>
+              <h1>{data.title}</h1>
               <ArticleMeta
                 slug={slug}
-                article={article}
+                article={data}
                 loggedIn={loggedIn}
                 user={user}
               />
@@ -38,10 +41,10 @@ const Article = () => {
           <div className="container page">
             <div className="row article-content">
               <div className="col-md-12">
-                {article.body.split("\n").map((paragraph, index) => (
+                {data.body.split("\n").map((paragraph, index) => (
                   <p key={index}>{paragraph}</p>
                 ))}
-                <ArticleTags article={article} />
+                <ArticleTags article={data} />
               </div>
             </div>
             <hr />
@@ -49,7 +52,7 @@ const Article = () => {
             <div className="article-actions">
               <ArticleMeta
                 slug={slug}
-                article={article}
+                article={data}
                 loggedIn={loggedIn}
                 user={user}
               />
@@ -59,7 +62,7 @@ const Article = () => {
               <div className="col-xs-12 col-md-8 offset-md-2">
                 {loggedIn ? (
                   <>
-                    <CommentList user={user} slug={slug} />
+                    <CommentList user={user} slug={slug} loggedIn={loggedIn} />
                   </>
                 ) : (
                   <>

@@ -8,6 +8,13 @@ export const AuthProvider = ({ children }) => {
   const [loggedIn, setloggedIn] = useState(false);
 
   useEffect(() => {
+    const fetchCurrentUser = async () => {
+      const currentUser = await getCurrentUser();
+      setUser(currentUser);
+      setAuthToken(currentUser.token);
+      setloggedIn(true);
+    };
+
     const token = localStorage.getItem("token");
     if (token) {
       setAuthToken(token);
@@ -15,32 +22,28 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const fetchCurrentUser = async () => {
-    const currentUser = await getCurrentUser();
-    setUser(currentUser);
-    setAuthToken(currentUser.token);
-    setloggedIn(true);
-  };
-
   const updateSettings = async (userData) => {
-    const user = await updateUser(userData);
-    setUser(user);
-    setAuthToken(user.token);
+    const response = await updateUser(userData);
+    setUser(response);
+    setAuthToken(response.token);
+    localStorage.setItem("token", response.token);
     setloggedIn(true);
   };
 
   const login = async (email, password) => {
-    const user = await loginUser(email, password);
-    setUser(user);
-    setAuthToken(user.token);
+    const response = await loginUser(email, password);
+    setUser(response);
+    setAuthToken(response.token);
+    localStorage.setItem("token", response.token);
     setloggedIn(true);
-    return user;
+    return response;
   };
 
   const logout = () => {
     setUser(null);
-    setloggedIn(null);
+    setloggedIn(false);
     setAuthToken(null);
+    localStorage.removeItem("token");
   };
 
   return (

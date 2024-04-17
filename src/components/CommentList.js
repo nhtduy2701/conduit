@@ -1,32 +1,21 @@
-import { useState, useEffect } from "react";
-import { getCommentsFromArticle } from "../services/Api";
+import { useQuery } from "@tanstack/react-query";
+import { getComments } from "../services/Api";
 import { Link } from "react-router-dom";
 import DeleteComment from "./DeleteComment";
 import CommentForm from "../components/CommentForm";
 
-const CommentList = ({ slug, user }) => {
-  const [comments, setComments] = useState([]);
+const CommentList = ({ slug, user, loggedIn }) => {
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ["comments", slug],
+    queryFn: () => getComments(slug),
+  });
 
-  useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const response = await getCommentsFromArticle(slug);
-        setComments(response.comments);
-      } catch (error) {
-        console.error("Error fetching comments:", error);
-      }
-    };
+  if (isLoading) return <p>Loading comments...</p>;
 
-    fetchComments();
-  }, [slug]);
+  const { comments } = data;
 
-  const updateCommentsList = async () => {
-    try {
-      const response = await getCommentsFromArticle(slug);
-      setComments(response.comments);
-    } catch (error) {
-      console.error("Error updating comments list:", error);
-    }
+  const updateCommentsList = () => {
+    refetch();
   };
 
   return (
@@ -64,7 +53,9 @@ const CommentList = ({ slug, user }) => {
             </time>
             <DeleteComment
               slug={slug}
-              commentId={comment.id}
+              user={user}
+              comment={comment}
+              loggedIn={loggedIn}
               updateCommentsList={updateCommentsList}
             />
           </div>

@@ -5,12 +5,8 @@ const DeleteButton = ({ article, user, loggedIn, slug }) => {
   const navigate = useNavigate();
 
   const handleDelete = async () => {
-    try {
-      await deleteArticle(slug);
-      navigate("/");
-    } catch (error) {
-      console.error("Error deleting article:", error);
-    }
+    await deleteArticle(slug);
+    navigate("/");
   };
 
   return (

@@ -7,10 +7,10 @@ import Register from "./components/Register";
 import Article from "./pages/Article";
 import Profile from "./pages/Profile";
 import Setting from "./pages/Setting";
-import Favorite from "./pages/Favorite";
 import Editor from "./pages/Editor";
+import NotFound from "./pages/NotFound";
 
-function App() {
+const App = () => {
   return (
     <Router>
       <Header />
@@ -19,15 +19,16 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/article/:slug" element={<Article />} />
-        <Route path="/:username" element={<Profile />} />
-        <Route path="/:username/favorites" element={<Favorite />} />
+        <Route path="/profile/:username" element={<Profile />} />
+        <Route path="/profile/:username/favorites" element={<Profile />} />
         <Route path="/settings" element={<Setting />} />
         <Route path="/editor" element={<Editor />} />
         <Route path="/editor/:slug" element={<Editor />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
     </Router>
   );
-}
+};
 
 export default App;
