@@ -22,6 +22,12 @@ const Home = () => {
     setCurrentPage(1);
   };
 
+  const handleTagClick = (currentTag) => {
+    setCurrentTag(currentTag);
+    setRequestType(null);
+    setCurrentPage(1);
+  };
+
   return (
     <div className="home-page">
       <div className="banner">
@@ -51,10 +57,7 @@ const Home = () => {
           <div className="col-md-3">
             <div className="sidebar">
               <p>Popular Tags</p>
-              <TagList
-                setCurrentTag={setCurrentTag}
-                setCurrentPage={setCurrentPage}
-              />
+              <TagList handleTagClick={handleTagClick} />
             </div>
           </div>
         </div>

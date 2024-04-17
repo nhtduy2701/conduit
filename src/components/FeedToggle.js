@@ -13,7 +13,9 @@ const FeedToggle = ({
         {loggedIn && (
           <li className="nav-item">
             <Link
-              className={requestType ? "nav-link active" : "nav-link"}
+              className={
+                requestType && !currentTag ? "nav-link active" : "nav-link"
+              }
               to="/"
               onClick={handleYourFeedClick}
             >
