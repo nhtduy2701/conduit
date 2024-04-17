@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { registerUser } from "../services/Api";
 import { useAuth } from "../services/AuthContext";
 
 const Register = () => {
@@ -8,7 +7,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const { loggedIn } = useAuth();
+  const { loggedIn, register } = useAuth();
   const [showPage, setShowPage] = useState(true);
   const navigate = useNavigate();
 
@@ -16,8 +15,8 @@ const Register = () => {
     event.preventDefault();
 
     try {
-      await registerUser(username, email, password);
-      navigate("/login");
+      await register(username, email, password);
+      navigate("/");
     } catch (error) {
       setError("Failed!");
     }
