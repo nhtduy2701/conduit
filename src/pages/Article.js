@@ -1,5 +1,5 @@
-import { useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { getArticle } from "../services/Api";
 import { useAuth } from "../services/AuthContext";
 import CommentList from "../components/CommentList";
@@ -15,12 +15,11 @@ const Article = () => {
   const { data, isError } = useQuery({
     queryKey: ["article", slug],
     queryFn: () => getArticle(slug),
+    retry: 0,
   });
 
   useEffect(() => {
-    if (isError) {
-      navigate("*");
-    }
+    if (isError) navigate("*");
   }, [isError, navigate]);
 
   return (
@@ -49,14 +48,16 @@ const Article = () => {
             </div>
             <hr />
 
-            <div className="article-actions">
-              <ArticleMeta
-                slug={slug}
-                article={data}
-                loggedIn={loggedIn}
-                user={user}
-              />
-            </div>
+            {!loggedIn && (
+              <div className="article-actions">
+                <ArticleMeta
+                  slug={slug}
+                  article={data}
+                  loggedIn={loggedIn}
+                  user={user}
+                />
+              </div>
+            )}
 
             <div className="row">
               <div className="col-xs-12 col-md-8 offset-md-2">

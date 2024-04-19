@@ -7,7 +7,7 @@ const FollowAuthor = ({ author, user, loggedIn }) => {
 
   useEffect(() => {
     const isFollowingStored =
-      localStorage.getItem("following_" + author.username) === "true";
+      localStorage.getItem("following" + author.username) === "true";
     setIsFollowing(isFollowingStored);
   }, [author.username]);
 
@@ -15,7 +15,7 @@ const FollowAuthor = ({ author, user, loggedIn }) => {
     try {
       await followUser(author.username);
       setIsFollowing(true);
-      localStorage.setItem("following_" + author.username, "true");
+      localStorage.setItem("following" + author.username, "true");
     } catch (error) {
       console.error("Error following author:", error);
     }
@@ -25,7 +25,7 @@ const FollowAuthor = ({ author, user, loggedIn }) => {
     try {
       await unfollowUser(author.username);
       setIsFollowing(false);
-      localStorage.removeItem("following_" + author.username);
+      localStorage.removeItem("following" + author.username);
     } catch (error) {
       console.error("Error unfollowing author:", error);
     }

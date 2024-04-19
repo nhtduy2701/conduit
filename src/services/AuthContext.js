@@ -11,20 +11,17 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loggedIn, setloggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
-    const fetchCurrentUser = async () => {
-      const currentUser = await getCurrentUser();
-      setUser(currentUser);
-      setAuthToken(currentUser.token);
-      setloggedIn(true);
-    };
-
     const token = localStorage.getItem("token");
     if (token) {
       setAuthToken(token);
-      fetchCurrentUser();
+      const currentUser = getCurrentUser();
+      if (currentUser) {
+        setUser(currentUser);
+        setLoggedIn(true);
+      }
     }
   }, []);
 
@@ -32,33 +29,33 @@ export const AuthProvider = ({ children }) => {
     const response = await updateUser(userData);
     setUser(response);
     setAuthToken(response.token);
+    setLoggedIn(true);
     localStorage.setItem("token", response.token);
-    setloggedIn(true);
   };
 
   const login = async (email, password) => {
     const response = await loginUser(email, password);
-    localStorage.setItem("token", response.token);
     setUser(response);
     setAuthToken(response.token);
-    setloggedIn(true);
+    setLoggedIn(true);
+    localStorage.setItem("token", response.token);
     return response;
   };
 
   const register = async (username, email, password) => {
     const response = await registerUser(username, email, password);
     if (response.token) {
-      localStorage.setItem("token", response.token);
       setUser(response);
       setAuthToken(response.token);
-      setloggedIn(true);
+      setLoggedIn(true);
+      localStorage.setItem("token", response.token);
     }
     return response;
   };
 
   const logout = () => {
     setUser(null);
-    setloggedIn(false);
+    setLoggedIn(false);
     setAuthToken(null);
     localStorage.removeItem("token");
   };

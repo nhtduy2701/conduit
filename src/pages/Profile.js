@@ -4,52 +4,37 @@ import UserInfo from "../components/UserInfo";
 import { useAuth } from "../services/AuthContext";
 import { getProfile } from "../services/Api";
 import { useState, useEffect } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
 const Profile = () => {
-  const [requestType, setRequestType] = useState(() => {
-    return localStorage.getItem("requestType") || null;
-  });
+  const [requestType, setRequestType] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const { loggedIn, user } = useAuth();
   const { username } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const { data, isError } = useQuery({
-    queryKey: ["profile", username, requestType],
-    queryFn: () => getProfile(username, requestType),
+    queryKey: ["profile", username],
+    queryFn: () => getProfile(username),
+    retry: 0,
   });
 
   const handleFavoriteArticlesClick = () => {
-    setRequestType("favorites");
+    setRequestType(true);
     setCurrentPage(1);
-    localStorage.setItem("requestType", "favorites");
+    localStorage.setItem("requestType", true);
   };
 
   const handleMyProfileClick = () => {
-    setRequestType(null);
+    setRequestType(false);
     setCurrentPage(1);
-    localStorage.removeItem("requestType");
+    localStorage.getItem("requestType", false);
   };
 
   useEffect(() => {
-    if (location.pathname === `/profile/${username}`) {
-      setRequestType(null);
-      localStorage.removeItem("requestType");
-    } else if (
-      location.pathname === `/profile/${username}/favorites` &&
-      !requestType
-    ) {
-      setRequestType("favorites");
-      localStorage.setItem("requestType", "favorites");
-    }
-
-    if (isError) {
-      navigate("*");
-    }
-  }, [isError, navigate, location.pathname, username, requestType]);
+    if (isError) navigate("*");
+  }, [isError, navigate]);
 
   return (
     <>
@@ -65,17 +50,20 @@ const Profile = () => {
                   handleMyProfileClick={handleMyProfileClick}
                   requestType={requestType}
                 />
-                {requestType ? (
+                {requestType === true && (
                   <ArticleList
                     favorited={username}
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}
+                    loggedIn={loggedIn}
                   />
-                ) : (
+                )}
+                {requestType === false && (
                   <ArticleList
                     author={username}
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}
+                    loggedIn={loggedIn}
                   />
                 )}
               </div>

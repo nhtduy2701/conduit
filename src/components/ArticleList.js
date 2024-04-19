@@ -25,6 +25,7 @@ const ArticleList = ({
     ],
     queryFn: () =>
       getArticles(requestType, currentTag, author, favorited, limit, offset),
+    refetchOnWindowFocus: false,
   });
 
   if (isFetching)

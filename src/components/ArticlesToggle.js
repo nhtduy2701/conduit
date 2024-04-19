@@ -10,7 +10,7 @@ const ArticlesToggle = ({
       <ul className="nav nav-pills outline-active">
         <li className="nav-item">
           <Link
-            className={!requestType ? "nav-link active" : "nav-link"}
+            className={requestType === false ? "nav-link active" : "nav-link"}
             to={`/profile/${profile.username}`}
             onClick={handleMyProfileClick}
           >
@@ -19,8 +19,8 @@ const ArticlesToggle = ({
         </li>
         <li className="nav-item">
           <Link
-            className={requestType ? "nav-link active" : "nav-link"}
-            to={`/profile/${profile.username}/favorites`}
+            className={requestType === true ? "nav-link active" : "nav-link"}
+            to={`/profile/${profile.username}`}
             onClick={handleFavoriteArticlesClick}
           >
             Favorited Articles
