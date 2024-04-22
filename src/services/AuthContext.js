@@ -14,16 +14,18 @@ export const AuthProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setAuthToken(token);
-      const currentUser = getCurrentUser();
-      if (currentUser) {
-        setUser(currentUser);
-        setLoggedIn(true);
-      }
-    }
+    currentUser();
   }, []);
+
+  const currentUser = async () => {
+    const token = localStorage.getItem("token");
+    setAuthToken(token);
+    if (token) {
+      const currentUser = await getCurrentUser();
+      setUser(currentUser);
+      setLoggedIn(true);
+    }
+  };
 
   const updateSettings = async (userData) => {
     const response = await updateUser(userData);
